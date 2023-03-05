@@ -1,7 +1,8 @@
 package ru.netology.springbootdemoap2.service;
 
 import org.springframework.stereotype.Service;
-import ru.netology.springbootdemoap2.Authorities;
+import ru.netology.springbootdemoap2.UserModel.Authorities;
+import ru.netology.springbootdemoap2.UserModel.User;
 import ru.netology.springbootdemoap2.exception.InvalidCredentials;
 import ru.netology.springbootdemoap2.exception.UnauthorizedUser;
 import ru.netology.springbootdemoap2.repository.UserRepository;
@@ -16,11 +17,11 @@ public class AuthorizationService {
         this.userRepository = userRepository;
     }
 
-    public List<Authorities> getAuthorities(String user, String password) {
-        if (isEmpty(user) || isEmpty(password)) {
+    public List<Authorities> getAuthorities(User user) {
+        if (isEmpty(user.getUser()) || isEmpty(user.getPassword())) {
             throw new InvalidCredentials("User name or password is empty");
         }
-        List<Authorities> userAuthorities = userRepository.getUserAuthorities(user, password);
+        List<Authorities> userAuthorities = userRepository.getUserAuthorities(user);
         if (isEmpty(userAuthorities)) {
             throw new UnauthorizedUser("Unknown user " + user);
         }

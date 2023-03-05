@@ -1,29 +1,24 @@
 package ru.netology.springbootdemoap2.repository;
 
 import org.springframework.stereotype.Repository;
-import ru.netology.springbootdemoap2.Authorities;
+import ru.netology.springbootdemoap2.UserModel.Authorities;
+import ru.netology.springbootdemoap2.UserModel.User;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.Optional.ofNullable;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Repository
 public class UserRepository {
 
-    private final Map<Integer, List<Authorities>> storage = new ConcurrentHashMap<>();
+    private final List<User> users = new CopyOnWriteArrayList<>();
 
-    public void save (String user, String password, List <Authorities> authorities) {
-        storage.put(getKey(user, password), authorities);
+    public List<Authorities> getUserAuthorities(User user) {
+        int userIndex = users.indexOf(user);
+        return userIndex != -1 ? users.get(userIndex).getAuthorities() : Collections.emptyList();
     }
 
-    private int getKey(String user, String password) {
-        return Objects.hash (user, password);
+    public String save(User user) {
+        users.add(user);
+        return user.getUser();
     }
-
-    public List <Authorities> getUserAuthorities(String user, String password) {
-        return ofNullable(storage.get(getKey(user, password)))
-                .orElseGet(Collections::emptyList);
-    }
-
 }
